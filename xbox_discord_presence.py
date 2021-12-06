@@ -48,6 +48,9 @@ def check_open():
         resp = requests.get(url, headers=headers)
         try:
             game = resp.json()[0]['devices'][0]['titles'][1]['name']
+        except KeyError:
+            print('Xbox is off...')  
+            return
         except IndexError:
             print('User is not playing game...')
             prev_game = None
