@@ -40,12 +40,16 @@ class DiscordRichPresenceForXbox:
 
         while True:
             print('Checking for status update...')
-            url = 'https://xbl.io/api/v2/presence/{}'.format(self.x_uid)
+            url = 'https://xbl.io/api/v2/{}/presence'.format(self.x_uid)
             xbl_req_headers = CaseInsensitiveDict()
             xbl_req_headers['X-Authorization'] = self.open_xbl_key
-            xbl_response = requests.get(url, headers=xbl_req_headers)
+            xbl_response = requests.request('GET', url, headers=xbl_req_headers)
+            if xbl_response.status_code != 200:
+                print('Something went wrong...')
+                return
             try:
-                game = xbl_response.json()[0]['devices'][0]['titles'][1]['name']
+                game = xbl_response.json()[0]['devices'][0]['titles'][0]['name']
+                print(xbl_response.json())
             except IndexError:
                 print('User is not playing anything...')
                 prev_game = None
@@ -79,4 +83,4 @@ while True:
     except Exception as base_error:
         print(base_error)
         print('Base Error.')
-    time.sleep(60)
+    time.sleep(20)
